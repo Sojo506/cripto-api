@@ -24,13 +24,22 @@ document.addEventListener("DOMContentLoaded", () => {
   coinSelect.addEventListener("change", readValue);
 });
 
-function quoteCriptocoins() {
+async function quoteCriptocoins() {
   const url =
     "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD";
-  fetch(url)
+
+  /* fetch(url)
     .then((res) => res.json())
     .then((data) => getCriptocoins(data.Data))
-    .then((criptocoins) => selectCriptocoins(criptocoins));
+    .then((criptocoins) => selectCriptocoins(criptocoins)); */
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    const criptocoins = await getCriptocoins(data.Data);
+    selectCriptocoins(criptocoins);
+  } catch (error) {
+    console.log("🚀 ~ file: app.js:41 ~ quoteCriptocoins ~ error:", error);
+  }
 }
 
 function selectCriptocoins(criptocoins) {
@@ -77,16 +86,24 @@ function submitForm(e) {
   callAPI();
 }
 
-function callAPI() {
+async function callAPI() {
   const { coin, criptocoin } = searcherObj;
 
   const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptocoin}&tsyms=${coin}`;
 
   showSpinner();
 
-  fetch(url)
+  /* fetch(url)
     .then((res) => res.json())
-    .then((data) => showQuote(data.DISPLAY[criptocoin][coin]));
+    .then((data) => showQuote(data.DISPLAY[criptocoin][coin])); */
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    showQuote(data.DISPLAY[criptocoin][coin]);
+  } catch (error) {
+    console.log("🚀 ~ file: app.js:105 ~ callAPI ~ error:", error);
+  }
 }
 
 function showQuote(quote) {
